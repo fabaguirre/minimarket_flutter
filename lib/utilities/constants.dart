@@ -13,7 +13,7 @@ final kLabelStyle = TextStyle(
 
 final kTitleStyle = TextStyle(
   color: Colors.white,
-  fontSize: 38,
+  fontSize: 30,
   fontFamily: 'Itim-Regular',
 );
 

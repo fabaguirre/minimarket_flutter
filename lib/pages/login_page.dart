@@ -261,7 +261,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Icon(
           Icons.store,
           color: Colors.white,
-          size: 50,
+          size: 40,
         ),
         SizedBox(
           width: 10,
