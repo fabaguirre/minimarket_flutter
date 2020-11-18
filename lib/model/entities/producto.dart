@@ -30,7 +30,8 @@ class Producto {
 
   @override
   String toString() {
-    return "ID: $id, Nombre: $nombre, Precio Unitario: $precioUnitario";
+    return "ID: $id, Nombre: $nombre, Precio Unitario: $precioUnitario, " +
+        "Unidad: $unidad, Stock: $stock";
   }
 }
 
@@ -58,5 +59,22 @@ Future<http.Response> deleteProducto(
     'Accept': 'application/json',
     'Authorization': 'Bearer $token',
   });
+  return response;
+}
+
+Future<http.Response> createProducto(
+    http.Client client, String token, Producto producto) async {
+  final http.Response response = await client.post(baseUrl + 'api/productos',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, String>{
+        'nombre': producto.nombre,
+        'precioUnitario': producto.precioUnitario.toString(),
+        'unidad': producto.unidad,
+        'stock': producto.stock.toString(),
+      }));
   return response;
 }

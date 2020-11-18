@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:minimarket/model/entities/producto.dart';
 import 'package:minimarket/utilities/confirm_dialog.dart';
 import 'package:minimarket/utilities/constants.dart';
+import 'package:minimarket/utilities/form_dialog.dart';
 import 'package:minimarket/utilities/main_drawer.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -32,10 +33,27 @@ class ProductosPage extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
-          onPressed: () => print('Crear nuevo producto'),
+          onPressed: () => _showDialogCreateProducto(context, token),
         ),
       ),
     );
+  }
+
+  _showDialogCreateProducto(BuildContext context, String token) {
+    List<Map<String, dynamic>> fields = [
+      {'hint': 'Nombre', 'type': TextInputType.text},
+      {'hint': 'Precio', 'type': TextInputType.number},
+      {'hint': 'Unidad', 'type': TextInputType.text},
+      {'hint': 'Stock', 'type': TextInputType.number},
+    ];
+    showFormDialog(
+      context,
+      title: 'Nuevo Producto',
+      fields: fields,
+      textOK: 'Guardar',
+      token: token,
+    );
+    //print(form.getInputs()[0]);
   }
 }
 
@@ -124,10 +142,18 @@ class _ProductosState extends State<Productos> {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       child: Row(children: <Widget>[
-        Image.network(
-          producto.image,
-          width: 100,
-        ),
+        producto.image != null
+            ? Image.network(
+                producto.image,
+                width: 100,
+              )
+            : Container(
+                padding: EdgeInsets.all(16.0),
+                child: Icon(
+                  Icons.image_not_supported,
+                  size: 80,
+                ),
+              ),
         SizedBox(width: 20),
         Expanded(
           child: Text(
