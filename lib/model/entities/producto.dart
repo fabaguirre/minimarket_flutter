@@ -4,11 +4,11 @@ import 'package:minimarket/utilities/base_url.dart';
 
 class Producto {
   final int id;
-  final String nombre;
-  final double precioUnitario;
-  final String unidad;
-  final String image;
-  final int stock;
+  String nombre;
+  double precioUnitario;
+  String unidad;
+  String image;
+  int stock;
 
   Producto(
       {this.id,
@@ -76,5 +76,23 @@ Future<http.Response> createProducto(
         'unidad': producto.unidad,
         'stock': producto.stock.toString(),
       }));
+  return response;
+}
+
+Future<http.Response> editProducto(
+    http.Client client, String token, Producto producto) async {
+  final http.Response response =
+      await client.put(baseUrl + 'api/productos/${producto.id}',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(<String, String>{
+            'nombre': producto.nombre,
+            'precioUnitario': producto.precioUnitario.toString(),
+            'unidad': producto.unidad,
+            'stock': producto.stock.toString(),
+          }));
   return response;
 }

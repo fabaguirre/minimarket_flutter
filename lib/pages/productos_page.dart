@@ -8,6 +8,7 @@ import 'package:minimarket/utilities/constants.dart';
 import 'package:minimarket/utilities/form_dialog.dart';
 import 'package:minimarket/utilities/main_drawer.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:toast/toast.dart';
 
 void main() => runApp(ProductosPage());
 
@@ -52,6 +53,10 @@ class ProductosPage extends StatelessWidget {
       fields: fields,
       textOK: 'Guardar',
       token: token,
+      actionOK: () {
+        Toast.show("Se guardaron el producto", context,
+            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+      },
     );
     //print(form.getInputs()[0]);
   }
@@ -88,7 +93,26 @@ class _ProductosState extends State<Productos> {
   }
 
   void _editProducto(Producto producto) {
-    print('Editar ' + producto.nombre);
+    List<Map<String, dynamic>> fields = [
+      {'hint': 'Nombre', 'type': TextInputType.text},
+      {'hint': 'Precio', 'type': TextInputType.number},
+      {'hint': 'Unidad', 'type': TextInputType.text},
+      {'hint': 'Stock', 'type': TextInputType.number},
+    ];
+    showFormDialog(
+      context,
+      title: 'Editar Producto',
+      fields: fields,
+      textOK: 'Editar',
+      token: widget.token,
+      producto: producto,
+      actionOK: () {
+        setState(() {
+          Toast.show("Se guardaron los cambios", context,
+              duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+        });
+      },
+    );
   }
 
   void _onRefresh() async {

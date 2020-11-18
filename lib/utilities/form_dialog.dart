@@ -9,7 +9,8 @@ showFormDialog(BuildContext context,
     String textCancel,
     VoidCallback actionOK,
     VoidCallback actionCancel,
-    String token}) {
+    String token,
+    Producto producto}) {
   List<TextEditingController> controllers = getControllers(fields);
   // set up the buttons
   Widget cancelButton = FlatButton(
@@ -26,7 +27,12 @@ showFormDialog(BuildContext context,
     child: textOK != null ? Text(textOK) : Text('OK'),
     onPressed: () {
       Navigator.of(context, rootNavigator: true).pop('dialog');
-      _createProducto(controllers, token);
+      if (producto == null) {
+        _createProducto(controllers, token);
+      } else {
+        _editProducto(controllers, token, producto);
+      }
+
       if (actionOK != null) {
         actionOK();
       }
@@ -59,6 +65,14 @@ showFormDialog(BuildContext context,
       return alert;
     },
   );
+
+  //load fields of producto
+  if (producto != null) {
+    controllers[0].text = producto.nombre;
+    controllers[1].text = producto.precioUnitario.toString();
+    controllers[2].text = producto.unidad;
+    controllers[3].text = producto.stock.toString();
+  }
 }
 
 List<Widget> getTextsField(List<Map<String, dynamic>> fields,
@@ -73,6 +87,7 @@ List<Widget> getTextsField(List<Map<String, dynamic>> fields,
       ),
     ));
   }
+
   return _fields;
 }
 
@@ -95,4 +110,16 @@ _createProducto(List<TextEditingController> controllers, String token) {
   print(producto.toString());
 
   createProducto(http.Client(), token, producto);
+}
+
+_editProducto(
+    List<TextEditingController> controllers, String token, Producto producto) {
+  producto.nombre = controllers[0].text;
+  producto.precioUnitario = double.parse(controllers[1].text);
+  producto.unidad = controllers[2].text;
+  producto.stock = int.parse(controllers[3].text);
+
+  print(producto.toString());
+
+  editProducto(http.Client(), token, producto);
 }
