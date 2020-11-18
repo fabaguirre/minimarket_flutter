@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minimarket/utilities/confirm_dialog.dart';
 import 'package:minimarket/utilities/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainDrawer extends StatelessWidget {
   final BuildContext context;
@@ -22,6 +23,7 @@ class MainDrawer extends StatelessWidget {
   void _logout() {
     Navigator.of(context)
         .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+    deletePreferences();
   }
 
   @override
@@ -70,5 +72,10 @@ class MainDrawer extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void deletePreferences() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.clear();
   }
 }

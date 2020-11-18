@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:minimarket/model/entities/login_usuario.dart';
 import 'package:minimarket/utilities/constants.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -288,6 +289,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     lu.then((value) {
       if (value.token != null) {
+        if (_rememberMe) {
+          savePreferences();
+        }
         Navigator.of(context).pushNamedAndRemoveUntil(
             '/productos', (Route<dynamic> route) => false,
             arguments: value.token);
@@ -304,6 +308,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    getPreferences().then((value) {
+      if (value != null) {
+        _usernameController.text = value['username'];
+        _passwordController.text = value['password'];
+        _loginUser(context);
+      }
+    });
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
@@ -351,5 +362,23 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<Map<String, String>> getPreferences() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    Map<String, String> map = {
+      'username': preferences.get('username'),
+      'password': preferences.get('password'),
+    };
+    if (map['username'] == null || map['password'] == null) return null;
+    return map;
+  }
+
+  void savePreferences() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    preferences.setString('username', _usernameController.text);
+    preferences.setString('password', _passwordController.text);
   }
 }
