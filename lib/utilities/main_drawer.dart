@@ -5,7 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MainDrawer extends StatelessWidget {
   final BuildContext context;
-  const MainDrawer({Key key, this.context}) : super(key: key);
+  final String token;
+  const MainDrawer({Key key, this.context, this.token}) : super(key: key);
   Widget _buildActionTitle(
       String nameAction, IconData iconAction, Function function) {
     return ListTile(
@@ -53,10 +54,14 @@ class MainDrawer extends StatelessWidget {
               ),
             ),
             _buildActionTitle('Productos', Icons.article, () {
-              print('Go to productos');
+              Navigator.of(context).pop();
+              Navigator.of(context)
+                  .pushNamed('/productos', arguments: {'token': token});
             }),
             _buildActionTitle('Ventas', Icons.shopping_cart, () {
-              print('Go to ventas');
+              Navigator.of(context).pop();
+              Navigator.of(context)
+                  .pushNamed('/ventas', arguments: {'token': token});
             }),
             _buildActionTitle('Salir', Icons.exit_to_app, () {
               showConfirmDialog(

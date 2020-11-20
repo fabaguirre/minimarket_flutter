@@ -10,32 +10,28 @@ import 'package:minimarket/utilities/main_drawer.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:toast/toast.dart';
 
-void main() => runApp(ProductosPage());
-
 class ProductosPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String token = ModalRoute.of(context).settings.arguments;
-    return MaterialApp(
-      title: 'Material App',
-      theme: themeDataApp,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            appName,
-            style: titleStyle(),
-          ),
+    final Map arguments = ModalRoute.of(context).settings.arguments as Map;
+    final String token = arguments['token'] as String;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          appName,
+          style: titleStyle(),
         ),
-        drawer: MainDrawer(
-          context: context,
-        ),
-        body: Productos(
-          token: token,
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () => _showDialogCreateProducto(context, token),
-        ),
+      ),
+      drawer: MainDrawer(
+        context: context,
+        token: token,
+      ),
+      body: Productos(
+        token: token,
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _showDialogCreateProducto(context, token),
       ),
     );
   }

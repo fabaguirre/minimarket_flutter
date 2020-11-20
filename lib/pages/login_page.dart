@@ -294,7 +294,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
         Navigator.of(context).pushNamedAndRemoveUntil(
             '/productos', (Route<dynamic> route) => false,
-            arguments: value.token);
+            arguments: {'token': value.token});
       } else {
         _usernameController.clear();
         _passwordController.clear();
