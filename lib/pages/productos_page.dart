@@ -15,46 +15,9 @@ class ProductosPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final Map arguments = ModalRoute.of(context).settings.arguments as Map;
     final String token = arguments['token'] as String;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          appName,
-          style: titleStyle(),
-        ),
-      ),
-      drawer: MainDrawer(
-        context: context,
-        token: token,
-      ),
-      body: Productos(
-        token: token,
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _showDialogCreateProducto(context, token),
-      ),
-    );
-  }
-
-  _showDialogCreateProducto(BuildContext context, String token) {
-    List<Map<String, dynamic>> fields = [
-      {'hint': 'Nombre', 'type': TextInputType.text},
-      {'hint': 'Precio', 'type': TextInputType.number},
-      {'hint': 'Unidad', 'type': TextInputType.text},
-      {'hint': 'Stock', 'type': TextInputType.number},
-    ];
-    showFormDialog(
-      context,
-      title: 'Nuevo Producto',
-      fields: fields,
-      textOK: 'Guardar',
+    return Productos(
       token: token,
-      actionOK: () {
-        Toast.show("Se guardaron el producto", context,
-            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
-      },
     );
-    //print(form.getInputs()[0]);
   }
 }
 
@@ -71,9 +34,14 @@ class _ProductosState extends State<Productos> {
       RefreshController(initialRefresh: false);
   List<Producto> productos = List<Producto>();
 
+  @override
+  void initState() {
+    super.initState();
+    _getProductos();
+  }
+
   void _getProductos() {
     Future<List<Producto>> p = fetchProductos(http.Client(), widget.token);
-    //p.then((value) => productos = value);
     p.then((value) {
       setState(() {
         productos = value;
@@ -111,6 +79,26 @@ class _ProductosState extends State<Productos> {
     );
   }
 
+  _showDialogCreateProducto(BuildContext context, String token) {
+    List<Map<String, dynamic>> fields = [
+      {'hint': 'Nombre', 'type': TextInputType.text},
+      {'hint': 'Precio', 'type': TextInputType.number},
+      {'hint': 'Unidad', 'type': TextInputType.text},
+      {'hint': 'Stock', 'type': TextInputType.number},
+    ];
+    showFormDialog(
+      context,
+      title: 'Nuevo Producto',
+      fields: fields,
+      textOK: 'Guardar',
+      token: token,
+      actionOK: () {
+        Toast.show("Se guardaron el producto", context,
+            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+      },
+    );
+  }
+
   void _onRefresh() async {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
@@ -123,39 +111,6 @@ class _ProductosState extends State<Productos> {
       print('Error Actualizando');
       _refreshController.refreshFailed();
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getProductos();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return productos.isEmpty
-        ? Center(child: Text('No hay productos para mostrar'))
-        : SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: true,
-            header: MaterialClassicHeader(),
-            footer: CustomFooter(
-              builder: (BuildContext context, LoadStatus mode) {
-                return Container(
-                  height: 55.0,
-                  child: Center(child: SizedBox()),
-                );
-              },
-            ),
-            controller: _refreshController,
-            onRefresh: _onRefresh,
-            child: ListView.builder(
-                itemCount: this.productos.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final Producto producto = this.productos[index];
-                  return _buildProductoRow(producto, index);
-                }),
-          );
   }
 
   Widget _buildProductoRow(Producto producto, int index) {
@@ -228,6 +183,49 @@ class _ProductosState extends State<Productos> {
           ),
         ),
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          appName,
+          style: titleStyle(),
+        ),
+      ),
+      drawer: MainDrawer(
+        context: context,
+        token: widget.token,
+      ),
+      body: productos.isEmpty
+          ? Center(child: Text('No hay productos para mostrar'))
+          : SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: true,
+              header: MaterialClassicHeader(),
+              footer: CustomFooter(
+                builder: (BuildContext context, LoadStatus mode) {
+                  return Container(
+                    height: 55.0,
+                    child: Center(child: SizedBox()),
+                  );
+                },
+              ),
+              controller: _refreshController,
+              onRefresh: _onRefresh,
+              child: ListView.builder(
+                  itemCount: this.productos.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final Producto producto = this.productos[index];
+                    return _buildProductoRow(producto, index);
+                  }),
+            ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _showDialogCreateProducto(context, widget.token),
+      ),
     );
   }
 }
