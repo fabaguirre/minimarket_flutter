@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:minimarket/model/entities/venta.dart';
-import 'package:minimarket/utilities/confirm_dialog.dart';
-import 'package:minimarket/utilities/constants.dart';
-import 'package:minimarket/utilities/main_drawer.dart';
+import 'package:minimarket/util/confirm_dialog.dart';
+import 'package:minimarket/util/constants.dart';
+import 'package:minimarket/util/main_drawer.dart';
 import 'package:http/http.dart' as http;
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 

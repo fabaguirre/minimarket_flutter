@@ -3,7 +3,7 @@ import 'package:minimarket/pages/login_page.dart';
 import 'package:minimarket/pages/home_page.dart';
 import 'package:minimarket/pages/productos_page.dart';
 import 'package:minimarket/pages/ventas_page.dart';
-import 'package:minimarket/utilities/constants.dart';
+import 'package:minimarket/util/constants.dart';
 
 void main() => runApp(MyApp());
 

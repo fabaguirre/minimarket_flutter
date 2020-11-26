@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:minimarket/utilities/constants.dart';
+import 'package:minimarket/util/constants.dart';
 
 class Welcome extends StatefulWidget {
   @override

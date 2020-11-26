@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:minimarket/model/entities/producto.dart';
-import 'package:minimarket/utilities/base_url.dart';
+import 'package:minimarket/util/base_url.dart';
 
 class Venta {
   final int id;
