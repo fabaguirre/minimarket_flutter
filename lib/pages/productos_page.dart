@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:http/http.dart' as http;
 import 'package:minimarket/model/entities/producto.dart';
+import 'package:minimarket/model/services/producto_service.dart';
 import 'package:minimarket/util/confirm_dialog.dart';
 import 'package:minimarket/util/constants.dart';
 import 'package:minimarket/util/form_dialog.dart';

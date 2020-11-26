@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minimarket/model/entities/producto.dart';
 import 'package:http/http.dart' as http;
+import 'package:minimarket/model/services/producto_service.dart';
 
 showFormDialog(BuildContext context,
     {String title,

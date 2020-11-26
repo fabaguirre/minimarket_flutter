@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:minimarket/model/entities/venta.dart';
+import 'package:minimarket/model/services/venta_service.dart';
 import 'package:minimarket/util/confirm_dialog.dart';
 import 'package:minimarket/util/constants.dart';
 import 'package:minimarket/util/main_drawer.dart';
