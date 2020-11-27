@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:minimarket/model/entities/venta.dart';
 import 'package:minimarket/model/services/venta_service.dart';
-import 'package:minimarket/util/confirm_dialog.dart';
 import 'package:minimarket/util/constants.dart';
 import 'package:minimarket/util/main_drawer.dart';
 import 'package:http/http.dart' as http;
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class VentasPage extends StatelessWidget {
   @override
@@ -34,6 +34,7 @@ class _VentasState extends State<Ventas> {
   @override
   void initState() {
     super.initState();
+    initializeDateFormatting();
     _getVentas();
   }
 
@@ -70,7 +71,7 @@ class _VentasState extends State<Ventas> {
                   itemCount: this.ventas.length,
                   itemBuilder: (BuildContext context, int index) {
                     final Venta venta = this.ventas[index];
-                    return _buildVentaRow(venta, index);
+                    return _buildVentaRow(venta, index, context);
                   }),
             ),
     );
@@ -87,10 +88,6 @@ class _VentasState extends State<Ventas> {
     });
   }
 
-  _deleteVenta(Venta venta, int index) {
-    print('Eliminar Venta ${venta.id}');
-  }
-
   void _onRefresh() async {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
@@ -105,45 +102,135 @@ class _VentasState extends State<Ventas> {
     }
   }
 
-  Widget _buildVentaRow(Venta venta, int index) {
-    return Slidable(
-      actionPane: SlidableDrawerActionPane(),
+  List<Widget> _getLineasVenta(Venta venta) {
+    List<Widget> list = [];
+    for (var item in venta.lineasVenta) {
+      list.add(Row(
+        children: <Widget>[
+          Text(item.cantidad.toString()),
+          SizedBox(
+            width: 10,
+          ),
+          Text(item.producto.nombre),
+          SizedBox(
+            width: 10,
+          ),
+          Text(item.producto.precioUnitario.toString()),
+          SizedBox(
+            width: 10,
+          ),
+          Text(item.total.toString()),
+        ],
+      ));
+    }
+    return list;
+  }
+
+  Widget _buildVentaRow(Venta venta, int index, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
       child: Row(children: <Widget>[
         Text("${venta.id}",
+            style: TextStyle(
+              fontSize: 65.0,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'OpenSans',
+              color: Colors.black12,
+            )),
+        SizedBox(width: 20),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(DateFormat.yMMMMd('en_US').format(venta.fecha),
+                  style: TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'OpenSans',
+                      color: Colors.black26)),
+              SizedBox(
+                height: 6,
+              ),
+              Row(
+                children: <Widget>[
+                  Text(venta.lineasVenta[0].cantidad.toString()),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(venta.lineasVenta[0].producto.nombre),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text('S/.' +
+                      venta.lineasVenta[0].producto.precioUnitario.toString()),
+                ],
+              ),
+              venta.lineasVenta.length < 2
+                  ? SizedBox(
+                      height: 15,
+                    )
+                  : Row(
+                      children: <Widget>[
+                        Text(venta.lineasVenta[1].cantidad.toString()),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(venta.lineasVenta[1].producto.nombre),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text('S/.' +
+                            venta.lineasVenta[1].producto.precioUnitario
+                                .toString()),
+                      ],
+                    ),
+              venta.lineasVenta.length < 3
+                  ? SizedBox(
+                      height: 15,
+                    )
+                  : Center(
+                      child: GestureDetector(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Venta #' + venta.id.toString()),
+                                content: SingleChildScrollView(
+                                  child: Container(
+                                    width: double.infinity,
+                                    child: Column(
+                                      children: _getLineasVenta(venta),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            });
+                      },
+                      child: Text('Ver más...',
+                          style: TextStyle(
+                              fontSize: 13.0,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'OpenSans',
+                              color: Colors.black38)),
+                    )),
+            ],
+          ),
+        ),
+        SizedBox(width: 20),
+        Text('S/. ',
             style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.w700,
               fontFamily: 'OpenSans',
             )),
-        SizedBox(width: 20),
-        Container(
-          child: Center(
-            child: Text(venta.fecha.toString(),
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'OpenSans',
-                )),
-          ),
-        ),
+        Text(venta.total.toString(),
+            style: TextStyle(
+              fontSize: 30.0,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'OpenSans',
+            ))
       ]),
-      secondaryActions: <Widget>[
-        IconSlideAction(
-          caption: 'Eliminar',
-          color: Colors.red,
-          foregroundColor: Colors.white,
-          icon: Icons.delete,
-          onTap: () => showConfirmDialog(
-            context,
-            title: '¿Está seguro que desea eliminar este venta?',
-            content:
-                'La venta con ID:${venta.id} se quitará de la lista de ventas',
-            textOK: 'Sí, estoy seguro',
-            textCancel: 'Cancelar',
-            actionOK: () => _deleteVenta(venta, index),
-          ),
-        ),
-      ],
     );
   }
 }
