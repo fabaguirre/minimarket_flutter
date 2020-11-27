@@ -9,4 +9,15 @@ class LoginUsuario {
     return LoginUsuario(json['nombreUsuario'] as String, 'password',
         token: json['token'] as String);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LoginUsuario &&
+          username.compareTo(other.username) == 0 &&
+          password.compareTo(other.password) == 0 &&
+          token.compareTo(other.token) == 0;
+
+  @override
+  int get hashCode => username.hashCode ^ password.hashCode ^ token.hashCode;
 }
