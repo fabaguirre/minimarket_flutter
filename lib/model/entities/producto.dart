@@ -25,6 +25,26 @@ class Producto {
   }
 
   @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Producto &&
+          id == other.id &&
+          nombre.compareTo(other.nombre) == 0 &&
+          precioUnitario == other.precioUnitario &&
+          unidad.compareTo(other.unidad) == 0 &&
+          image.compareTo(other.image) == 0 &&
+          stock == other.stock;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      nombre.hashCode ^
+      precioUnitario.hashCode ^
+      unidad.hashCode ^
+      image.hashCode ^
+      stock.hashCode;
+
+  @override
   String toString() {
     return "ID: $id, Nombre: $nombre, Precio Unitario: $precioUnitario, " +
         "Unidad: $unidad, Stock: $stock";

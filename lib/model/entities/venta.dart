@@ -1,4 +1,4 @@
-import 'package:minimarket/model/entities/producto.dart';
+import 'package:minimarket/model/entities/linea_venta.dart';
 
 class Venta {
   final int id;
@@ -18,31 +18,18 @@ class Venta {
   }
 
   @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Venta &&
+          id == other.id &&
+          fecha.compareTo(other.fecha) == 0 &&
+          total == other.total;
+
+  @override
+  int get hashCode => id.hashCode ^ fecha.hashCode ^ total.hashCode;
+
+  @override
   String toString() {
     return "ID: $id, Fecha: $fecha, Total: $total, Lineas Venta: $lineasVenta";
-  }
-}
-
-class LineaVenta {
-  final int id;
-  Producto producto;
-  int cantidad;
-  double total;
-
-  LineaVenta({this.id, this.producto, this.cantidad, this.total});
-
-  factory LineaVenta.fromJson(Map<String, dynamic> json) {
-    return LineaVenta(
-      id: json['id'] as int,
-      producto: Producto.fromJson(json['producto']),
-    );
-  }
-
-  static List<LineaVenta> getLineasVentaFromJson(List<dynamic> json) {
-    List<LineaVenta> lineasVenta = List<LineaVenta>();
-    for (var item in json) {
-      lineasVenta.add(LineaVenta.fromJson(item));
-    }
-    return lineasVenta;
   }
 }
