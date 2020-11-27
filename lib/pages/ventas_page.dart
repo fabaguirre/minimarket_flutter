@@ -80,7 +80,7 @@ class _VentasState extends State<Ventas> {
   void _getVentas() {
     Future<List<Venta>> v = fetchVentas(http.Client(), widget.token);
     v.then((value) {
-      print(value.toString());
+      print('$value');
       print(value[0].lineasVenta[0].producto.unidad);
       setState(() {
         ventas = value;
@@ -108,135 +108,137 @@ class _VentasState extends State<Ventas> {
       list.add(DataRow(
         cells: [
           DataCell(Text(item.producto.nombre)),
-          DataCell(Text(item.cantidad.toString())),
-          DataCell(Text(item.producto.precioUnitario.toString())),
-          DataCell(Text(item.total.toString())),
+          DataCell(Text('${item.cantidad}')),
+          DataCell(Text('${item.producto.precioUnitario}')),
+          DataCell(Text('${item.total}')),
         ],
       ));
     }
     return list;
   }
 
+  _showLineasVenta(Venta venta) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Venta #${venta.id}'),
+            content: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columns: [
+                    DataColumn(
+                      label: Text('Producto'),
+                    ),
+                    DataColumn(
+                      label: Text('Cant.'),
+                    ),
+                    DataColumn(
+                      label: Text('P.Unit(S/.)'),
+                    ),
+                    DataColumn(
+                      label: Text('Total(S/.)'),
+                    ),
+                  ],
+                  rows: _getLineasVenta(venta),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   Widget _buildVentaRow(Venta venta, int index, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
-      child: Row(children: <Widget>[
-        Text("${venta.id}",
-            style: TextStyle(
-              fontSize: 65.0,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'OpenSans',
-              color: Colors.black12,
-            )),
-        SizedBox(width: 20),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(DateFormat.yMMMMd('en_US').format(venta.fecha),
-                  style: TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'OpenSans',
-                      color: Colors.black26)),
-              SizedBox(
-                height: 6,
-              ),
-              Row(
-                children: <Widget>[
-                  Text(venta.lineasVenta[0].cantidad.toString()),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(venta.lineasVenta[0].producto.nombre),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text('S/.' +
-                      venta.lineasVenta[0].producto.precioUnitario.toString()),
-                ],
-              ),
-              venta.lineasVenta.length < 2
-                  ? SizedBox(
-                      height: 15,
-                    )
-                  : Row(
-                      children: <Widget>[
-                        Text(venta.lineasVenta[1].cantidad.toString()),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(venta.lineasVenta[1].producto.nombre),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text('S/.' +
-                            venta.lineasVenta[1].producto.precioUnitario
-                                .toString()),
-                      ],
+      child: GestureDetector(
+        onTap: () => _showLineasVenta(venta),
+        child: Row(children: <Widget>[
+          Text('${venta.id}',
+              style: TextStyle(
+                fontSize: 65.0,
+                fontWeight: FontWeight.w700,
+                fontFamily: 'OpenSans',
+                color: Colors.black12,
+              )),
+          SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(DateFormat.yMMMMd('en_US').format(venta.fecha),
+                    style: TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'OpenSans',
+                        color: Colors.black26)),
+                SizedBox(
+                  height: 6,
+                ),
+                Row(
+                  children: <Widget>[
+                    Text('${venta.lineasVenta[0].cantidad}'),
+                    SizedBox(
+                      width: 10,
                     ),
-              venta.lineasVenta.length < 3
-                  ? SizedBox(
-                      height: 15,
-                    )
-                  : Center(
-                      child: GestureDetector(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Venta #' + venta.id.toString()),
-                                content: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: DataTable(
-                                      columns: [
-                                        DataColumn(
-                                          label: Text('Producto'),
-                                        ),
-                                        DataColumn(
-                                          label: Text('Cant.'),
-                                        ),
-                                        DataColumn(
-                                          label: Text('P.Unit(S/.)'),
-                                        ),
-                                        DataColumn(
-                                          label: Text('Total(S/.)'),
-                                        ),
-                                      ],
-                                      rows: _getLineasVenta(venta),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            });
-                      },
-                      child: Text('Ver más...',
-                          style: TextStyle(
-                              fontSize: 13.0,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'OpenSans',
-                              color: Colors.black38)),
-                    )),
-            ],
+                    Text('${venta.lineasVenta[0].producto.nombre}'),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text('S/.${venta.lineasVenta[0].producto.precioUnitario}'),
+                  ],
+                ),
+                venta.lineasVenta.length < 2
+                    ? SizedBox(
+                        height: 15,
+                      )
+                    : Row(
+                        children: <Widget>[
+                          Text('${venta.lineasVenta[1].cantidad}'),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text('${venta.lineasVenta[1].producto.nombre}'),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                              'S/.${venta.lineasVenta[1].producto.precioUnitario}'),
+                        ],
+                      ),
+                venta.lineasVenta.length < 3
+                    ? SizedBox(
+                        height: 15,
+                      )
+                    : Center(
+                        child: Text(
+                        '${venta.lineasVenta.length - 2} elemento(s) más',
+                        style: TextStyle(
+                            fontSize: 13.0,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: 'OpenSans',
+                            color: Colors.black38),
+                      )),
+              ],
+            ),
           ),
-        ),
-        SizedBox(width: 20),
-        Text('S/. ',
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'OpenSans',
-            )),
-        Text(venta.total.toString(),
-            style: TextStyle(
-              fontSize: 30.0,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'OpenSans',
-            ))
-      ]),
+          SizedBox(width: 20),
+          Text('S/. ',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.w700,
+                fontFamily: 'OpenSans',
+              )),
+          Text('${venta.total}',
+              style: TextStyle(
+                fontSize: 30.0,
+                fontWeight: FontWeight.w700,
+                fontFamily: 'OpenSans',
+              ))
+        ]),
+      ),
     );
   }
 }

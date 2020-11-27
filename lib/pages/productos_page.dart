@@ -117,50 +117,53 @@ class _ProductosState extends State<Productos> {
   Widget _buildProductoRow(Producto producto, int index) {
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
-      child: Row(children: <Widget>[
-        producto.image != null
-            ? Image.network(
-                producto.image,
-                width: 100,
-              )
-            : Container(
-                padding: EdgeInsets.all(16.0),
-                child: Icon(
-                  Icons.image_not_supported,
-                  size: 80,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(children: <Widget>[
+          producto.image != null
+              ? Image.network(
+                  producto.image,
+                  width: 100,
+                )
+              : Container(
+                  padding: EdgeInsets.all(16.0),
+                  child: Icon(
+                    Icons.image_not_supported,
+                    size: 80,
+                  ),
                 ),
+          SizedBox(width: 20),
+          Expanded(
+            child: Text(
+              producto.nombre.toUpperCase(),
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.w700,
+                fontFamily: 'OpenSans',
               ),
-        SizedBox(width: 20),
-        Expanded(
-          child: Text(
-            producto.nombre,
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'OpenSans',
             ),
           ),
-        ),
-        SizedBox(width: 20),
-        Text("S/." + producto.precioUnitario.toString(),
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'OpenSans',
-            )),
-        SizedBox(width: 20),
-        Container(
-          child: Center(
-            child: Text(producto.stock.toString(),
-                style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'OpenSans',
-                )),
+          SizedBox(width: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text("P.Unit: S/.${producto.precioUnitario}",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'OpenSans',
+                  )),
+              SizedBox(width: 20),
+              Text('Stock: ${producto.stock}',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'OpenSans',
+                  )),
+            ],
           ),
-          width: 50,
-        ),
-      ]),
+        ]),
+      ),
       secondaryActions: <Widget>[
         IconSlideAction(
           caption: 'Editar',
