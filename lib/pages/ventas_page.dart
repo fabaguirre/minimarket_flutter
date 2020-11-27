@@ -102,24 +102,15 @@ class _VentasState extends State<Ventas> {
     }
   }
 
-  List<Widget> _getLineasVenta(Venta venta) {
-    List<Widget> list = [];
+  List<DataRow> _getLineasVenta(Venta venta) {
+    List<DataRow> list = [];
     for (var item in venta.lineasVenta) {
-      list.add(Row(
-        children: <Widget>[
-          Text(item.cantidad.toString()),
-          SizedBox(
-            width: 10,
-          ),
-          Text(item.producto.nombre),
-          SizedBox(
-            width: 10,
-          ),
-          Text(item.producto.precioUnitario.toString()),
-          SizedBox(
-            width: 10,
-          ),
-          Text(item.total.toString()),
+      list.add(DataRow(
+        cells: [
+          DataCell(Text(item.producto.nombre)),
+          DataCell(Text(item.cantidad.toString())),
+          DataCell(Text(item.producto.precioUnitario.toString())),
+          DataCell(Text(item.total.toString())),
         ],
       ));
     }
@@ -197,10 +188,25 @@ class _VentasState extends State<Ventas> {
                               return AlertDialog(
                                 title: Text('Venta #' + venta.id.toString()),
                                 content: SingleChildScrollView(
-                                  child: Container(
-                                    width: double.infinity,
-                                    child: Column(
-                                      children: _getLineasVenta(venta),
+                                  scrollDirection: Axis.vertical,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: DataTable(
+                                      columns: [
+                                        DataColumn(
+                                          label: Text('Producto'),
+                                        ),
+                                        DataColumn(
+                                          label: Text('Cant.'),
+                                        ),
+                                        DataColumn(
+                                          label: Text('P.Unit(S/.)'),
+                                        ),
+                                        DataColumn(
+                                          label: Text('Total(S/.)'),
+                                        ),
+                                      ],
+                                      rows: _getLineasVenta(venta),
                                     ),
                                   ),
                                 ),
